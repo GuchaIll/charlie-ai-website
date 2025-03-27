@@ -24,3 +24,25 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@font-face {
+  font-family: "Nasalization";
+  src: url("/fonts/Nasalization.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Nulshock";
+  src: url("/fonts/NulshockBd.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "space_age";
+  src: url("/fonts/space_age.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
