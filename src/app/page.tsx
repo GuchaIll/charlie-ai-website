@@ -253,7 +253,7 @@ performance and maintainable code.
             >
               GitHub
             </Button>
-            <Button
+            {/* <Button
               variant="outlined"
               sx={{
                 color: "white",
@@ -265,7 +265,7 @@ performance and maintainable code.
               rel="noopener noreferrer"
             >
               LinkedIn
-            </Button>
+            </Button> */}
           </div>
         </section>
       </main>
