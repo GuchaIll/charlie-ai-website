@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./carousel.css"; // Import CSS for styling
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 
-const Carousel: React.FC<{onClose : ()=> void}> = ({onClose}) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const Carousel: React.FC = () => {
   const cards = [
     {
       id: 1,
@@ -125,20 +123,6 @@ const Carousel: React.FC<{onClose : ()=> void}> = ({onClose}) => {
       ],
     },
   ];
-  // Automatically rotate cards every 3 seconds
-  
-
-  // Navigate to the previous card
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? cards.length - 1 : prevIndex - 1
-    );
-  };
-
-  // Navigate to the next card
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % cards.length);
-  };
 
   const srcset = (image: string, size: number, rows = 1, cols = 1) => {
     return {
@@ -149,35 +133,25 @@ const Carousel: React.FC<{onClose : ()=> void}> = ({onClose}) => {
 
 
   return (
-    <div className="carousel-container"
-    style = {{
-        position: "relative",
-        zIndex: 10,
-    }}
-    >
-      {/* Left Arrow Button */}
-      <button className="carousel-arrow left" onClick={handlePrev}>
-        {"<"}
-      </button>
-
-      {/* Carousel Cards */}
-      <div
-        className="carousel"
-        style={{
-          transform: `translateX(-${currentIndex * 100}%)`,
-        }}
-      >
+    <div className="gallery-container">
+      <div className="gallery-track">
         {cards.map((card) => (
-          <div className="carousel-card" key={card.id}>
-           {/*<h2>{card.title}</h2>
-            <p>{card.description}</p> */}
-
-            <Card sx={{ width:"100%", 
-                maxWidth: 480, 
-                height: 600, 
-                backgroundColor: "rgb(36, 34, 31)",
-                color: "white"}}>
-          <ImageList
+          <div className="gallery-card" key={card.id}>
+            <Card
+              sx={{
+                width: "100%",
+                maxWidth: 460,
+                height: 620,
+                background:
+                  "linear-gradient(160deg, rgba(20, 22, 28, 0.95), rgba(8, 10, 12, 0.95))",
+                border: "1px solid rgba(120, 180, 255, 0.25)",
+                boxShadow: "0 0 24px rgba(60, 120, 255, 0.15)",
+                color: "white",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <ImageList
                 sx={{ width: "100%", height: "50%", maxHeight: 300 }}
                 variant="quilted"
                 cols={2}
@@ -196,103 +170,72 @@ const Carousel: React.FC<{onClose : ()=> void}> = ({onClose}) => {
                       style={{
                         width: "100%",
                         height: "100%",
-                        objectFit: "cover", // Ensure the image fills the container without distortion
+                        objectFit: "cover",
                       }}
                     />
                   </ImageListItem>
                 ))}
               </ImageList>
-        <CardContent>
-         <Typography gutterBottom variant="h5" 
-         component="div"
-        sx={{
-        fontFamily: "Nasalization", // Apply the custom font
-        fontSize: "1.5rem", // Adjust font size
-        }}>
-         {card.title}
-        </Typography>
-        <Typography variant="body2" 
-        sx={{ color: 'rgba(151, 146, 134, 0.7)', 
-              fontFamily: "Nulshock"
-        }}>
-        {card.description}
-        </Typography>
-        </CardContent>
-        <CardActions>
-        <Button
-            size="small"
-            variant="outlined"
-            sx={{
-            color: "white",
-            borderColor: "white", // Set outline color
-            "&:hover": {
-                borderColor: "gray", // Change outline color on hover
-        },
-        }}
-        href={card.githubLink} // Link to GitHub
-        target="_blank" // Open in a new tab
-        rel="noopener noreferrer" // Security best practice
-        >
-        GitHub
-        </Button>
-         <Button
-            size="small"
-            variant="outlined"
-            sx={{
-            color: "white",
-            borderColor: "white", // Set outline color
-            "&:hover": {
-            borderColor: "gray", // Change outline color on hover
-            },
-            }}
-        href={card.discordLink} // Link to Discord
-        target="_blank" // Open in a new tab
-        rel="noopener noreferrer" // Security best practice
-        >
-            Discord
-        </Button>
-        </CardActions>
-        <button
-            className="text-lg px-4 py-2 rounded"
-            style={{
-                fontFamily: "Nasalization", // Apply the correct font family
-                backgroundColor: "rgb(36, 34, 31)", // Set the fill color
-                color: "white", // Set the text color
-                border: "1px solid white", // Add a border
-                transition: "background-color 0.3s ease, color 0.3s ease", // Smooth hover effect
-            }}
-            onClick={onClose}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "gray"; // Change fill color on hover
-                e.currentTarget.style.color = "black"; // Change text color on hover
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "rgb(36, 34, 31)"; // Reset fill color
-                e.currentTarget.style.color = "white"; // Reset text color
-            }}
-            >
-            Close
-            </button>
-        </Card>
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  sx={{
+                    fontFamily: "Nasalization",
+                    fontSize: "1.4rem",
+                    letterSpacing: "0.02em",
+                  }}
+                >
+                  {card.title}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ color: "rgba(200, 220, 255, 0.65)", fontFamily: "Nulshock" }}
+                >
+                  {card.description}
+                </Typography>
+              </CardContent>
+              <CardActions sx={{ padding: "0 16px 16px" }}>
+                {card.githubLink ? (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    sx={{
+                      color: "white",
+                      borderColor: "rgba(120, 180, 255, 0.6)",
+                      "&:hover": {
+                        borderColor: "white",
+                      },
+                    }}
+                    href={card.githubLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    GitHub
+                  </Button>
+                ) : null}
+                {card.discordLink ? (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    sx={{
+                      color: "white",
+                      borderColor: "rgba(120, 180, 255, 0.6)",
+                      "&:hover": {
+                        borderColor: "white",
+                      },
+                    }}
+                    href={card.discordLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Discord
+                  </Button>
+                ) : null}
+              </CardActions>
+            </Card>
           </div>
-        ))}
-      </div>
-
-      {/* Right Arrow Button */}
-      <button className="carousel-arrow right" onClick={handleNext}>
-        {">"}
-      </button>
-
-      {/* Dots for Navigation */}
-      <div className="carousel-controls">
-        {cards.map((_, index) => (
-          <button
-            key={index}
-            className={`carousel-dot ${
-              index === currentIndex ? "active" : ""
-            }`}
-            onClick={() => setCurrentIndex(index)}
-          ></button>
         ))}
       </div>
     </div>

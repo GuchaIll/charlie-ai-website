@@ -74,3 +74,165 @@
   .carousel-arrow:hover {
     background: rgba(0, 0, 0, 0.8);
   }
+
+.gallery-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+.gallery-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(280px, 1fr);
+  gap: 20px;
+  padding: 8px 4px 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+
+.gallery-track::-webkit-scrollbar {
+  height: 8px;
+}
+
+.gallery-track::-webkit-scrollbar-thumb {
+  background: rgba(120, 180, 255, 0.35);
+  border-radius: 999px;
+}
+
+.gallery-card {
+  scroll-snap-align: start;
+  min-width: 280px;
+}
+
+.project-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.project-tag {
+  background: rgba(8, 10, 12, 0.8);
+  border: 1px solid rgba(120, 180, 255, 0.35);
+  color: rgba(210, 230, 255, 0.9);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-tag::after {
+  content: "•";
+  color: rgba(90, 150, 220, 0.6);
+  margin-left: 10px;
+}
+
+.project-tag:last-child::after {
+  content: "";
+}
+
+.project-tag.active {
+  border-color: rgba(120, 220, 255, 0.85);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(90, 190, 255, 0.35);
+}
+
+.project-panel {
+  border: 1px solid rgba(120, 180, 255, 0.3);
+  border-radius: 16px;
+  background: rgba(6, 8, 12, 0.7);
+  overflow: hidden;
+  animation: panel-pop 360ms ease;
+}
+
+.project-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: linear-gradient(90deg, rgba(12, 18, 30, 0.95), rgba(8, 12, 20, 0.6));
+  border-bottom: 1px solid rgba(120, 180, 255, 0.2);
+  font-family: "Nasalization", sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: rgba(210, 230, 255, 0.8);
+}
+
+.project-panel-title {
+  text-transform: lowercase;
+}
+
+.project-panel-status {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(120, 180, 255, 0.7);
+}
+
+.project-panel-body {
+  position: relative;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.project-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(12, 18, 28, 0.85);
+  border: 1px solid rgba(120, 180, 255, 0.4);
+  color: rgba(230, 245, 255, 0.9);
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-arrow.left {
+  left: 12px;
+}
+
+.project-arrow.right {
+  right: 12px;
+}
+
+.project-arrow:hover {
+  border-color: rgba(160, 230, 255, 0.9);
+  box-shadow: 0 0 14px rgba(90, 190, 255, 0.35);
+}
+
+.project-no-image {
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(120, 180, 255, 0.2);
+  color: rgba(140, 190, 255, 0.7);
+  font-family: "Nasalization", sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@keyframes panel-pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

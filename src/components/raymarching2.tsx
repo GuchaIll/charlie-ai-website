@@ -65,10 +65,10 @@ float mandelbulb(in vec3 p, out float iterationCount) {
     float power = uMandelbulbPower;
     int iter = uMandelbulbIterations;
 
-    float scale = 1.0 + 0.2 * sin(uTime);
+    float scale = 1.0 + 0.05 * sin(uTime * 0.5);
     z *= scale;
 
-    float angle = uTime * 0.1;
+    float angle = uTime * 0.03;
     mat3 rotation = rotation_matrix(vec3(0.0, angle, 0.0));
     z = rotation * z;
 
@@ -124,12 +124,12 @@ vec3 calculate_normal(in vec3 p, out float iterationCount) {
 
 vec3 ray_march(in vec3 ro, in vec3 rd) {
   float total_distance_traveled = 0.0;
-  const int NUMBER_OF_STEPS = 128;
+  const int NUMBER_OF_STEPS = 96;
   const float MINIMUM_HIT_DISTANCE = 0.001;
   const float MAXIMUM_TRACE_DISTANCE = 1000.0;
 
   float godRayIntensity = 0.0;
-  float godRayStrength = min(0.1 + 0.07 * sin(uTime), 0.05);
+  float godRayStrength = min(0.04 + 0.02 * sin(uTime * 0.7), 0.035);
 
   
   vec3 light_position = vec3(2.0, -5.0, 3.0);
@@ -152,7 +152,7 @@ vec3 ray_march(in vec3 ro, in vec3 rd) {
 
       float diffuse_intensity = max(0.2, dot(normal, direction_to_light));
 
-      vec3 baseColor = mix(vec3(0.1, 0.2, 0.8), vec3(0.8, 0.2, 0.1), iterationCount);
+      vec3 baseColor = mix(vec3(0.08, 0.14, 0.28), vec3(0.35, 0.18, 0.12), iterationCount);
      
       vec3 godRayColor = vec3(1.0, 0.8, 0.6) * godRayIntensity * godRayStrength;
 
@@ -199,7 +199,9 @@ void main() {
   // You can also add a small glow effect by multiplying with a color gradient if desired.
   vec3 starColor = vec3(1.0) * starMask;
 
-    gl_FragColor = vec4(shaded_color, 1.0);
+    vec3 background = vec3(0.07, 0.08, 0.1);
+    vec3 finalColor = mix(background, shaded_color, 0.8);
+    gl_FragColor = vec4(finalColor, 1.0);
 }
 `;
 const vertexShader = `
@@ -272,7 +274,7 @@ const Plane = () => {
 
   useFrame(() => {
     if (material.current) {
-      material.current.uniforms.uTime.value += 0.01;
+      material.current.uniforms.uTime.value += 0.004;
     }
   })
   const uniforms = useMemo(() => {
@@ -305,11 +307,11 @@ const Plane = () => {
             value : new THREE.Vector3(0,0,-2),
         },
         uMandelbulbPower : {
-            value: 8.0,
+            value: 6.0,
         },
 
         uMandelbulbIterations : {
-            value: 10,
+            value: 6,
         }
     };
   }, []);
@@ -345,8 +347,8 @@ const Plane = () => {
   }
 
   const {mandelbulbPower,mandelbulbIterations } = useControls ({
-    mandelbulbPower: { value: 8.0, min: 1.0, max: 16.0, step:1.0},
-    mandelbulbIterations: { value: 10, min: 1, max: 20, step:1}
+    mandelbulbPower: { value: 6.0, min: 1.0, max: 16.0, step:1.0},
+    mandelbulbIterations: { value: 6, min: 1, max: 20, step:1}
   })
 
   useFrame(() => {
