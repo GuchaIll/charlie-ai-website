@@ -12,12 +12,74 @@ const CarouselProject: React.FC = () => {
   const cards = [
     {
       id: 1,
+      title: "Concept.io - Collaborative Drawing App ",
+      description:
+        "Implemented a real-time collaborative drawing app with dynamic brushes and a layer system, plus session management, asset organization, and versioned canvases.",
+      showLink: true,
+      githubLink: "https://github.com/GuchaIll/Concept.io",
+      discordLink: "",
+      hasImage: true,
+      images: [
+        {
+          img: "/images/Concept.io/Canvas.png",
+          title: "Pipeline Placeholder 1",
+          rows: 1,
+          cols: 3,
+        },
+        {
+          img: "/images/Concept.io/Description.png",
+          title: "Pipeline Placeholder 2",
+          rows: 1,
+          cols: 1,
+        },
+        {
+          img: "/images/Concept.io/Projects.png",
+          title: "Pipeline Placeholder 3",
+          rows: 1,
+          cols: 2,
+        },
+          {
+          img: "/images/Concept.io/PM.png",
+          title: "Pipeline Placeholder 3",
+          rows: 1,
+          cols: 3,
+        },
+      ],
+    },
+    {
+      id: 2,
+      title: "Medical Transcription and Documentation Tool",
+      description:
+        "Designed a multi-stage transcription pipeline using LangGraph multi-agent flows, voice-activated detection, sessioned audio streaming, and speaker diarization to construct structured clinical records. Validating evidence-linked fields with rules-first validation",
+      showLink: false,
+      githubLink: "https://github.com/GuchaIll/transcription-doc-pipeline",
+      discordLink: "",
+      hasImage: true,
+      images: [
+       
+        {
+          img: "/images/MedicalTranscription/Interface.png",
+          title: "Pipeline Placeholder 2",
+          rows: 1,
+          cols: 3,
+        },
+         {
+          img: "/images/MedicalTranscription/Logo.png",
+          title: "Pipeline Placeholder 1",
+          rows: 1,
+          cols: 1,
+        },
+       
+      ],
+    },
+    {
+      id: 3,
       title: "CMU IS Consulting Site",
       description:
-        "As part of the final project for Intro to Web Development, collaborated with the CMU IS Department to create a consultation platform connecting community partners with student consultants. The platform allows users to submit consultation requests, browse available services and past collaboration projects. Built using native JavaScript, HTML, and CSS, designed for cross-platforms.",
+        "As part of the final project for Intro to Web Development, collaborated with the CMU IS Department to create a consultation platform connecting community partners with student consultants. The platform allows users to submit consultation requests, browse available services and past collaboration projects.",
       showLink: false,
       githubLink: "https://github.com/GuchaIll/MachinaAutomadum",
-      discordLink: "https://discord.gg/abakMYaG",
+    
       hasImage: true,
       images: [
         {
@@ -41,13 +103,13 @@ const CarouselProject: React.FC = () => {
       ],
     },
     {
-      id: 2,
+      id: 4,
       title: "Eco Hunt - TartanHacks",
       description:
         "Designed an AR-based scavenger hunt game for TartanHacks that encourages users to classify and recycle trash while earning virtual tokens. Integrated Google Maps API to provide real-time location tracking, allowing users to find and interact with AR-based environmental challenges in React Native",
-      showLink: false,
-      githubLink: "https://github.com/GuchaIll/Christmas-at-DQ",
-      discordLink: "https://discord.gg/EqsWKuTa",
+      showLink: true,
+      githubLink: "https://github.com/GuchaIll/ecohunt",
+    
       hasImage: true,
       images: [
         {
@@ -83,24 +145,24 @@ const CarouselProject: React.FC = () => {
       ],
     },
     {
-      id: 3,
+      id: 5,
       title: "Malloc Lab 18-213 (Computer Systems Project)",
       description:
         "Implemented a high-performance dynamic memory allocator in C using segregated free lists and a next-fit allocation strategy to optimize memory usage. Designed the allocator to efficiently manage memory fragmentation while maintaining fast allocation and deallocation times. Extensively tested and benchmarked the implementation against standard allocators to evaluate performance improvements.",
       showLink: false,
-      githubLink: "",
-      discordLink: "",
+      githubLink: "https://github.com/GuchaIll/malloc-lab",
+    
       hasImage: false,
       images: [],
     },
     {
-      id: 4,
-      title: "[WIP] Ray marching Engine",
+      id: 6,
+      title: "[WIP] Amoeboculus - Custom Game Engine (Rust, Wasm)",
       description:
-        "Developing a real-time rendering engine in C++ using ray marching to generate highly detailed procedural graphics. Rendering actors using signed distance functions (SDFs) to create complex 3D scenes. Exploring volumetric lighting, reflections, and soft shadows to enhance visual realism and performance.",
+        "Developing a real-time raymarching focused game engine in Rust and Wasm. ",
       showLink: false,
-      githubLink: "",
-      discordLink: "",
+      githubLink: "https://github.com/GuchaIll/amoeboculus-engine",
+    
       hasImage: true,
       images: [
         {
@@ -213,24 +275,7 @@ const CarouselProject: React.FC = () => {
                       GitHub
                     </Button>
                   ) : null}
-                  {card.discordLink ? (
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        color: "white",
-                        borderColor: "rgba(120, 180, 255, 0.6)",
-                        "&:hover": {
-                          borderColor: "white",
-                        },
-                      }}
-                      href={card.discordLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Discord
-                    </Button>
-                  ) : null}
+                  
                 </CardActions>
               ) : null}
             </Card>
