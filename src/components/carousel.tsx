@@ -1,5 +1,5 @@
-import React from "react";
-import "./carousel.css"; // Import CSS for styling
+import React, { useRef, useState, useEffect, useCallback } from "react";
+import "./carousel.css";
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -9,6 +9,58 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 
 const Carousel: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const cardCount = 4;
+
+  const handleScroll = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const children = Array.from(track.children) as HTMLElement[];
+    if (!children.length) return;
+    const scrollLeft = track.scrollLeft;
+    const cardWidth = children[0].offsetWidth + 16; // gap
+    const idx = Math.round(scrollLeft / cardWidth);
+    setActiveIndex(Math.min(Math.max(idx, 0), children.length - 1));
+  }, []);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    track.addEventListener("scroll", handleScroll, { passive: true });
+    return () => track.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
+  // Convert vertical wheel → horizontal scroll (attached to container so the whole area is captured)
+  useEffect(() => {
+    const container = containerRef.current;
+    const track = trackRef.current;
+    if (!container || !track) return;
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        track.scrollLeft += e.deltaY;
+      }
+    };
+    container.addEventListener("wheel", onWheel, { passive: false });
+    return () => container.removeEventListener("wheel", onWheel);
+  }, []);
+
+  const scrollToIndex = (idx: number) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const children = Array.from(track.children) as HTMLElement[];
+    if (!children[idx]) return;
+    children[idx].scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+  };
+
+  const scrollBy = (dir: -1 | 1) => {
+    const next = Math.max(0, Math.min(activeIndex + dir, cardCount - 1));
+    scrollToIndex(next);
+  };
+
   const cards = [
     {
       id: 1,
@@ -133,22 +185,32 @@ const Carousel: React.FC = () => {
 
 
   return (
-    <div className="gallery-container">
-      <div className="gallery-track">
+    <div className="gallery-container" ref={containerRef}>
+      <div className="gallery-with-arrows">
+        <button
+          className="gallery-arrow-side"
+          onClick={() => scrollBy(-1)}
+          disabled={activeIndex === 0}
+          aria-label="Previous"
+        >
+          ‹
+        </button>
+        <div className="gallery-track" ref={trackRef}>
         {cards.map((card) => (
           <div className="gallery-card" key={card.id}>
             <Card
               sx={{
                 width: "100%",
-                maxWidth: 460,
-                height: 620,
-                background:
-                  "linear-gradient(160deg, rgba(20, 22, 28, 0.95), rgba(8, 10, 12, 0.95))",
-                border: "1px solid rgba(120, 180, 255, 0.25)",
-                boxShadow: "0 0 24px rgba(60, 120, 255, 0.15)",
+                height: 520,
+                background: "rgba(18, 18, 18, 0.65)",
+                backdropFilter: "blur(8px)",
+                border: "1px solid rgba(220, 220, 225, 0.18)",
+                borderRadius: "14px",
+                boxShadow: "none",
                 color: "white",
                 display: "flex",
                 flexDirection: "column",
+                overflow: "hidden",
               }}
             >
               <ImageList
@@ -183,7 +245,7 @@ const Carousel: React.FC = () => {
                   component="div"
                   sx={{
                     fontFamily: "Nasalization",
-                    fontSize: "1.4rem",
+                    fontSize: "1.05rem",
                     letterSpacing: "0.02em",
                   }}
                 >
@@ -191,7 +253,7 @@ const Carousel: React.FC = () => {
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ color: "rgba(200, 220, 255, 0.65)", fontFamily: "Nulshock" }}
+                  sx={{ color: "rgba(200, 200, 210, 0.7)", lineHeight: 1.55, fontSize: "0.82rem" }}
                 >
                   {card.description}
                 </Typography>
@@ -202,10 +264,11 @@ const Carousel: React.FC = () => {
                     size="small"
                     variant="outlined"
                     sx={{
-                      color: "white",
-                      borderColor: "rgba(120, 180, 255, 0.6)",
+                      color: "rgba(220, 220, 225, 0.85)",
+                      borderColor: "rgba(180, 180, 190, 0.4)",
+                      fontSize: "0.75rem",
                       "&:hover": {
-                        borderColor: "white",
+                        borderColor: "rgba(220, 220, 225, 0.7)",
                       },
                     }}
                     href={card.githubLink}
@@ -220,10 +283,11 @@ const Carousel: React.FC = () => {
                     size="small"
                     variant="outlined"
                     sx={{
-                      color: "white",
-                      borderColor: "rgba(120, 180, 255, 0.6)",
+                      color: "rgba(220, 220, 225, 0.85)",
+                      borderColor: "rgba(180, 180, 190, 0.4)",
+                      fontSize: "0.75rem",
                       "&:hover": {
-                        borderColor: "white",
+                        borderColor: "rgba(220, 220, 225, 0.7)",
                       },
                     }}
                     href={card.discordLink}
@@ -237,6 +301,27 @@ const Carousel: React.FC = () => {
             </Card>
           </div>
         ))}
+      </div>{/* gallery-track */}
+        <button
+          className="gallery-arrow-side"
+          onClick={() => scrollBy(1)}
+          disabled={activeIndex === cardCount - 1}
+          aria-label="Next"
+        >
+          ›
+        </button>
+      </div>{/* gallery-with-arrows */}
+      <div className="gallery-nav">
+        <div className="gallery-dots">
+          {cards.map((card, i) => (
+            <button
+              key={card.id}
+              className={`gallery-dot${i === activeIndex ? " active" : ""}`}
+              onClick={() => scrollToIndex(i)}
+              aria-label={`Go to card ${i + 1}`}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

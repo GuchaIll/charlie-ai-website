@@ -46,3 +46,54 @@ body {
   font-style: normal;
 }
 
+/* ── Slide transition animations ── */
+.panel-exit-up {
+  animation: slideOutUp 300ms ease forwards;
+}
+.panel-exit-down {
+  animation: slideOutDown 300ms ease forwards;
+}
+.panel-enter-up {
+  animation: slideInFromAbove 350ms ease both;
+}
+.panel-enter-down {
+  animation: slideInFromBelow 350ms ease both;
+}
+
+@keyframes slideOutUp {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-40px); }
+}
+@keyframes slideOutDown {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(40px); }
+}
+@keyframes slideInFromBelow {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInFromAbove {
+  from { opacity: 0; transform: translateY(-40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive: stack columns on small screens ── */
+@media (max-width: 860px) {
+  div[style*="grid-template-columns: 380px"] {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+    padding: 0 20px !important;
+  }
+  aside[style*="sticky"] {
+    position: relative !important;
+    height: auto !important;
+    min-height: auto !important;
+    padding-top: 48px !important;
+    padding-bottom: 32px !important;
+  }
+  main[style*="min-height: 100vh"] {
+    min-height: auto !important;
+    padding-bottom: 80px !important;
+  }
+}
+

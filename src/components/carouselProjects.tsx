@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import "./carousel.css";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -9,38 +9,90 @@ import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 
 const CarouselProject: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const cardCount = 6;
+
+  const handleScroll = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const children = Array.from(track.children) as HTMLElement[];
+    if (!children.length) return;
+    const scrollLeft = track.scrollLeft;
+    const cardWidth = children[0].offsetWidth + 16; // gap
+    const idx = Math.round(scrollLeft / cardWidth);
+    setActiveIndex(Math.min(Math.max(idx, 0), children.length - 1));
+  }, []);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    track.addEventListener("scroll", handleScroll, { passive: true });
+    return () => track.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
+  // Convert vertical wheel → horizontal scroll (attached to container so the whole area is captured)
+  useEffect(() => {
+    const container = containerRef.current;
+    const track = trackRef.current;
+    if (!container || !track) return;
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        track.scrollLeft += e.deltaY;
+      }
+    };
+    container.addEventListener("wheel", onWheel, { passive: false });
+    return () => container.removeEventListener("wheel", onWheel);
+  }, []);
+
+  const scrollToIndex = (idx: number) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const children = Array.from(track.children) as HTMLElement[];
+    if (!children[idx]) return;
+    children[idx].scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+  };
+
+  const scrollBy = (dir: -1 | 1) => {
+    const next = Math.max(0, Math.min(activeIndex + dir, cardCount - 1));
+    scrollToIndex(next);
+  };
+
   const cards = [
     {
       id: 1,
-      title: "Concept.io - Collaborative Drawing App ",
+      title: "Concept.io — Collaborative AI Concept Art Platform",
+      date: "Aug 2025 – Mar 2026",
       description:
-        "Implemented a real-time collaborative drawing app with dynamic brushes and a layer system, plus session management, asset organization, and versioned canvases.",
+        "Real-time collaborative canvas using WebSockets for multi-user drawing and editing with integrated diffusion-based asset generation (SDXL, ControlNet, Segment Anything). Asynchronous GPU inference pipelines for image generation with optimized job orchestration. Layer-based snapshot versioning using delta-encoding with Git-style branching and state restoration.",
       showLink: true,
       githubLink: "https://github.com/GuchaIll/Concept.io",
-      discordLink: "",
       hasImage: true,
       images: [
         {
           img: "/images/Concept.io/Canvas.png",
-          title: "Pipeline Placeholder 1",
+          title: "Canvas",
           rows: 1,
           cols: 3,
         },
         {
           img: "/images/Concept.io/Description.png",
-          title: "Pipeline Placeholder 2",
+          title: "Description",
           rows: 1,
           cols: 1,
         },
         {
           img: "/images/Concept.io/Projects.png",
-          title: "Pipeline Placeholder 3",
+          title: "Projects",
           rows: 1,
           cols: 2,
         },
-          {
+        {
           img: "/images/Concept.io/PM.png",
-          title: "Pipeline Placeholder 3",
+          title: "Pipeline",
           rows: 1,
           cols: 3,
         },
@@ -48,38 +100,47 @@ const CarouselProject: React.FC = () => {
     },
     {
       id: 2,
-      title: "Medical Transcription and Documentation Tool",
+      title: "MedScribe — Clinical Transcription Pipeline",
+      date: "Dec 2025 – Mar 2026",
       description:
-        "Designed a multi-stage transcription pipeline using LangGraph multi-agent flows, voice-activated detection, sessioned audio streaming, and speaker diarization to construct structured clinical records. Validating evidence-linked fields with rules-first validation",
+        "Multimodal clinical AI transcription pipeline combining Whisper speech-to-text, Silero voice activity detection, and OCR-based document ingestion. LangGraph orchestration pipeline with a semantic grounding engine for constructing digital medical records and generating SOAP notes.",
       showLink: false,
       githubLink: "https://github.com/GuchaIll/transcription-doc-pipeline",
-      discordLink: "",
       hasImage: true,
       images: [
-       
         {
           img: "/images/MedicalTranscription/Interface.png",
-          title: "Pipeline Placeholder 2",
+          title: "Interface",
           rows: 1,
           cols: 3,
         },
-         {
+        {
           img: "/images/MedicalTranscription/Logo.png",
-          title: "Pipeline Placeholder 1",
+          title: "Logo",
           rows: 1,
           cols: 1,
         },
-       
       ],
     },
     {
       id: 3,
-      title: "CMU IS Consulting Site",
+      title: "Malloc Lab — Computer Systems (18-213)",
+      date: "Aug – Oct 2023",
       description:
-        "As part of the final project for Intro to Web Development, collaborated with the CMU IS Department to create a consultation platform connecting community partners with student consultants. The platform allows users to submit consultation requests, browse available services and past collaboration projects.",
+        "Custom dynamic memory allocator (malloc/free/realloc) in C with segregated free lists and boundary-tag coalescing, achieving high throughput and memory utilization.",
+      showLink: false,
+      githubLink: "",
+      hasImage: false,
+      images: [],
+    },
+    {
+      id: 4,
+      title: "CMU IS Consulting Platform",
+      date: "2025",
+      description:
+        "Collaborated with the CMU IS Department to build a consultation platform connecting community partners with student consultants. Users can submit requests, browse services, and explore past collaboration projects.",
       showLink: false,
       githubLink: "https://github.com/GuchaIll/MachinaAutomadum",
-    
       hasImage: true,
       images: [
         {
@@ -90,79 +151,68 @@ const CarouselProject: React.FC = () => {
         },
         {
           img: "/images/CMUConsultingIS/IS2.png",
-          title: "Burger",
+          title: "Detail",
           rows: 2,
           cols: 1,
         },
         {
           img: "/images/CMUConsultingIS/IS3.png",
-          title: "Camera",
+          title: "Overview",
           rows: 1,
           cols: 2,
         },
       ],
     },
     {
-      id: 4,
-      title: "Eco Hunt - TartanHacks",
+      id: 5,
+      title: "Eco Hunt — TartanHacks",
+      date: "2025",
       description:
-        "Designed an AR-based scavenger hunt game for TartanHacks that encourages users to classify and recycle trash while earning virtual tokens. Integrated Google Maps API to provide real-time location tracking, allowing users to find and interact with AR-based environmental challenges in React Native",
+        "AR-based scavenger hunt encouraging users to classify and recycle trash while earning virtual tokens. Integrated Google Maps API for real-time location tracking and AR environmental challenges in React Native.",
       showLink: true,
       githubLink: "https://github.com/GuchaIll/ecohunt",
-    
       hasImage: true,
       images: [
         {
           img: "/images/EcoHunt/ecohunt1.png",
-          title: "Coffee",
+          title: "Screen1",
           cols: 1,
           rows: 1,
         },
         {
           img: "/images/EcoHunt/ecohunt2.png",
-          title: "Hats",
+          title: "Screen2",
           rows: 1,
           cols: 1,
         },
         {
           img: "/images/EcoHunt/ecohunt3.png",
-          title: "Honey",
+          title: "Screen3",
           rows: 1,
           cols: 1,
         },
         {
           img: "/images/EcoHunt/ecohunt4.png",
-          title: "Honey",
+          title: "Screen4",
           rows: 1,
           cols: 1,
         },
         {
           img: "/images/EcoHunt/ecohunt5.png",
-          title: "Honey",
+          title: "Screen5",
           cols: 1,
           rows: 1,
         },
       ],
     },
     {
-      id: 5,
-      title: "Malloc Lab 18-213 (Computer Systems Project)",
-      description:
-        "Implemented a high-performance dynamic memory allocator in C using segregated free lists and a next-fit allocation strategy to optimize memory usage. Designed the allocator to efficiently manage memory fragmentation while maintaining fast allocation and deallocation times. Extensively tested and benchmarked the implementation against standard allocators to evaluate performance improvements.",
-      showLink: false,
-      githubLink: "https://github.com/GuchaIll/malloc-lab",
-    
-      hasImage: false,
-      images: [],
-    },
-    {
       id: 6,
-      title: "[WIP] Amoeboculus - Custom Game Engine (Rust, Wasm)",
+      title: "[WIP] Amoeboculus — Custom Game Engine (Rust, Wasm)",
+      date: "Ongoing",
       description:
-        "Developing a real-time raymarching focused game engine in Rust and Wasm. ",
+        "Developing a real-time raymarching-focused game engine in Rust and WebAssembly.",
       showLink: false,
       githubLink: "https://github.com/GuchaIll/amoeboculus-engine",
-    
       hasImage: true,
       images: [
         {
@@ -183,27 +233,37 @@ const CarouselProject: React.FC = () => {
   };
 
   return (
-    <div className="gallery-container">
-      <div className="gallery-track">
+    <div className="gallery-container" ref={containerRef}>
+      <div className="gallery-with-arrows">
+        <button
+          className="gallery-arrow-side"
+          onClick={() => scrollBy(-1)}
+          disabled={activeIndex === 0}
+          aria-label="Previous"
+        >
+          ‹
+        </button>
+        <div className="gallery-track" ref={trackRef}>
         {cards.map((card) => (
           <div className="gallery-card" key={card.id}>
             <Card
               sx={{
                 width: "100%",
-                maxWidth: 460,
-                height: 620,
-                background:
-                  "linear-gradient(160deg, rgba(20, 22, 28, 0.95), rgba(8, 10, 12, 0.95))",
-                border: "1px solid rgba(120, 180, 255, 0.25)",
-                boxShadow: "0 0 24px rgba(60, 120, 255, 0.15)",
+                height: 520,
+                background: "rgba(18, 18, 18, 0.65)",
+                backdropFilter: "blur(8px)",
+                border: "1px solid rgba(220, 220, 225, 0.18)",
+                borderRadius: "14px",
+                boxShadow: "none",
                 color: "white",
                 display: "flex",
                 flexDirection: "column",
+                overflow: "hidden",
               }}
             >
               {card.hasImage ? (
                 <ImageList
-                  sx={{ width: "100%", height: "50%", maxHeight: 300, minHeight: 200 }}
+                  sx={{ width: "100%", height: "45%", maxHeight: 240, minHeight: 160 }}
                   variant="quilted"
                   cols={3}
                   rowHeight={"auto"}
@@ -239,33 +299,49 @@ const CarouselProject: React.FC = () => {
                   component="div"
                   sx={{
                     fontFamily: "Nasalization",
-                    fontSize: "1.4rem",
+                    fontSize: "1.05rem",
                     letterSpacing: "0.02em",
+                    lineHeight: 1.3,
                   }}
                 >
                   {card.title}
                 </Typography>
                 <Typography
+                  variant="caption"
+                  sx={{
+                    color: "rgba(180, 180, 190, 0.5)",
+                    display: "block",
+                    marginBottom: "8px",
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    fontSize: "0.7rem",
+                  }}
+                >
+                  {card.date}
+                </Typography>
+                <Typography
                   variant="body2"
                   sx={{
-                    color: "rgba(200, 220, 255, 0.65)",
-                    fontFamily: "Nulshock",
+                    color: "rgba(200, 200, 210, 0.7)",
+                    lineHeight: 1.55,
+                    fontSize: "0.82rem",
                   }}
                 >
                   {card.description}
                 </Typography>
               </CardContent>
-              {card.showLink ? (
+              {card.showLink || card.githubLink ? (
                 <CardActions sx={{ padding: "0 16px 16px" }}>
                   {card.githubLink ? (
                     <Button
                       size="small"
                       variant="outlined"
                       sx={{
-                        color: "white",
-                        borderColor: "rgba(120, 180, 255, 0.6)",
+                        color: "rgba(220, 220, 225, 0.85)",
+                        borderColor: "rgba(180, 180, 190, 0.4)",
+                        fontSize: "0.75rem",
                         "&:hover": {
-                          borderColor: "white",
+                          borderColor: "rgba(220, 220, 225, 0.7)",
                         },
                       }}
                       href={card.githubLink}
@@ -275,12 +351,32 @@ const CarouselProject: React.FC = () => {
                       GitHub
                     </Button>
                   ) : null}
-                  
                 </CardActions>
               ) : null}
             </Card>
           </div>
         ))}
+        </div>{/* gallery-track */}
+        <button
+          className="gallery-arrow-side"
+          onClick={() => scrollBy(1)}
+          disabled={activeIndex === cardCount - 1}
+          aria-label="Next"
+        >
+          ›
+        </button>
+      </div>{/* gallery-with-arrows */}
+      <div className="gallery-nav">
+        <div className="gallery-dots">
+          {cards.map((card, i) => (
+            <button
+              key={card.id}
+              className={`gallery-dot${i === activeIndex ? " active" : ""}`}
+              onClick={() => scrollToIndex(i)}
+              aria-label={`Go to card ${i + 1}`}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

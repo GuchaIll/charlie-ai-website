@@ -1,62 +1,80 @@
 import React from "react";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+
+interface SkillGroup {
+  category: string;
+  skills: string[];
+}
 
 const SkillTable: React.FC = () => {
-  const skills = [
-    "JavaScript",
-    "React",
-    "Node.js",
-    "Django",
-    "Flask",
-    "TypeScript",
-    "Python",
-    "HTML",
-    "CSS",
-    "C++",
-    "C#",
-    'System Verilog',
-    'Rust',
-    "Java",
-    "MongoDB",
-    "MySQL",
-    "Git",
-    "PostgreSQL",
-    "Firebase",
-    "Docker",
-    "Unreal Engine",
-    "Unity",
+  const skillGroups: SkillGroup[] = [
+    {
+      category: "Languages",
+      skills: ["Python", "C/C++", "Rust", "JavaScript/TypeScript", "SQL", "C#"],
+    },
+    {
+      category: "System",
+      skills: ["Linux", "Multithreading/Concurrency", "REST/gRPC APIs", "WebSockets", "LangGraph"],
+    },
+    {
+      category: "Backend",
+      skills: ["Node.js (Express)", "Django/Flask", "MongoDB", "MySQL", "PostgreSQL", "Redis"],
+    },
+    {
+      category: "Frontend",
+      skills: ["React", "Next.js", "Tailwind CSS", "React Native"],
+    },
+    {
+      category: "Graphics / Engines",
+      skills: ["Unreal Engine 5", "Unity"],
+    },
   ];
 
-  const handleClick = (skill: string) => {
-    console.log(`You clicked on ${skill}`);
-  };
-
   return (
-   
-      <Stack
-        direction="row"
-        spacing={1}
-        sx={{
-            flexWrap: "wrap", // Ensure chips wrap to the next line
-            justifyContent: "center", // Center chips horizontally
-            gap: "8px", // Add spacing between chips
-          }}
-      >
-        {skills.map((skill, index) => (
-          <Chip
-            key={index}
-            label={skill}
-            onClick={() => handleClick(skill)}
-            variant={ "outlined"} // Alternate between outlined and filled
+    <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      {skillGroups.map((group) => (
+        <Box key={group.category}>
+          <Typography
+            variant="overline"
             sx={{
-              margin: "4px",
-              color: "white" // Add spacing between chips
+              color: "rgba(180, 180, 190, 0.5)",
+              fontSize: "0.65rem",
+              letterSpacing: "0.18em",
+              display: "block",
+              marginBottom: "8px",
             }}
-          />
-        ))}
-      </Stack>
-
+          >
+            {group.category}
+          </Typography>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{ flexWrap: "wrap", gap: "8px" }}
+          >
+            {group.skills.map((skill) => (
+              <Chip
+                key={skill}
+                label={skill}
+                variant="outlined"
+                size="small"
+                sx={{
+                  color: "rgba(220, 220, 225, 0.85)",
+                  borderColor: "rgba(180, 180, 190, 0.25)",
+                  fontSize: "0.78rem",
+                  "&:hover": {
+                    borderColor: "rgba(220, 220, 225, 0.5)",
+                    backgroundColor: "rgba(255, 255, 255, 0.04)",
+                  },
+                }}
+              />
+            ))}
+          </Stack>
+        </Box>
+      ))}
+    </Box>
   );
 };
 
