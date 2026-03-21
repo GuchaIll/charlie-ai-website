@@ -8,6 +8,52 @@ import Typography from "@mui/material/Typography";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 
+const VideoCarousel: React.FC<{ videos: string[] }> = ({ videos }) => {
+  const [idx, setIdx] = useState(0);
+  return (
+    <div style={{ width: "100%", height: "100%", position: "relative" }}>
+      <video
+        key={videos[idx]}
+        src={videos[idx]}
+        autoPlay
+        loop
+        muted
+        playsInline
+        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+      />
+      {videos.length > 1 && (
+        <div style={{
+          position: "absolute",
+          bottom: 6,
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          gap: 5,
+          zIndex: 2,
+        }}>
+          {videos.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIdx(i)}
+              style={{
+                width: i === idx ? 16 : 6,
+                height: 6,
+                borderRadius: 999,
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                background: i === idx ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.35)",
+                transition: "all 0.2s ease",
+              }}
+              aria-label={`Video ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const CarouselProject: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -71,32 +117,12 @@ const CarouselProject: React.FC = () => {
       showLink: true,
       githubLink: "https://github.com/GuchaIll/Concept.io",
       hasImage: true,
-      images: [
-        {
-          img: "/images/Concept.io/Canvas.png",
-          title: "Canvas",
-          rows: 1,
-          cols: 3,
-        },
-        {
-          img: "/images/Concept.io/Description.png",
-          title: "Description",
-          rows: 1,
-          cols: 1,
-        },
-        {
-          img: "/images/Concept.io/Projects.png",
-          title: "Projects",
-          rows: 1,
-          cols: 2,
-        },
-        {
-          img: "/images/Concept.io/PM.png",
-          title: "Pipeline",
-          rows: 1,
-          cols: 3,
-        },
+      videos: [
+        "/images/Concept.io/Generation1.mp4",
+        "/images/Concept.io/Drawing.mp4",
+        "/images/Concept.io/VersionControl.mp4",
       ],
+      images: [],
     },
     {
       id: 2,
@@ -107,20 +133,11 @@ const CarouselProject: React.FC = () => {
       showLink: false,
       githubLink: "https://github.com/GuchaIll/transcription-doc-pipeline",
       hasImage: true,
-      images: [
-        {
-          img: "/images/MedicalTranscription/Interface.png",
-          title: "Interface",
-          rows: 1,
-          cols: 3,
-        },
-        {
-          img: "/images/MedicalTranscription/Logo.png",
-          title: "Logo",
-          rows: 1,
-          cols: 1,
-        },
+      videos: [
+        "/images/MedicalTranscription/New project.mp4",
+        "/images/MedicalTranscription/Agent Query.mp4",
       ],
+      images: [],
     },
     {
       id: 3,
@@ -131,6 +148,7 @@ const CarouselProject: React.FC = () => {
       showLink: false,
       githubLink: "",
       hasImage: false,
+      videos: [],
       images: [],
     },
     {
@@ -142,6 +160,7 @@ const CarouselProject: React.FC = () => {
       showLink: false,
       githubLink: "https://github.com/GuchaIll/MachinaAutomadum",
       hasImage: true,
+      videos: [],
       images: [
         {
           img: "/images/CMUConsultingIS/IS1.png",
@@ -172,6 +191,7 @@ const CarouselProject: React.FC = () => {
       showLink: true,
       githubLink: "https://github.com/GuchaIll/ecohunt",
       hasImage: true,
+      videos: [],
       images: [
         {
           img: "/images/EcoHunt/ecohunt1.png",
@@ -214,6 +234,7 @@ const CarouselProject: React.FC = () => {
       showLink: false,
       githubLink: "https://github.com/GuchaIll/amoeboculus-engine",
       hasImage: true,
+      videos: [],
       images: [
         {
           img: "/images/GameEngine/ambience.png",
@@ -262,6 +283,17 @@ const CarouselProject: React.FC = () => {
               }}
             >
               {card.hasImage ? (
+                card.videos && card.videos.length > 0 ? (
+                  <div style={{
+                    width: "100%",
+                    height: "45%",
+                    maxHeight: 240,
+                    minHeight: 160,
+                    overflow: "hidden",
+                  }}>
+                    <VideoCarousel videos={card.videos} />
+                  </div>
+                ) : (
                 <ImageList
                   sx={{ width: "100%", height: "45%", maxHeight: 240, minHeight: 160 }}
                   variant="quilted"
@@ -287,6 +319,7 @@ const CarouselProject: React.FC = () => {
                     </ImageListItem>
                   ))}
                 </ImageList>
+                )
               ) : (
                 <div className="project-no-image">
                   <span>no preview data</span>
